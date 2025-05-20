@@ -1,0 +1,46 @@
+# Archivos generados
+target/
+build/
+dist/
+
+# Maven Wrapper
+.mvn/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Ayuda generada por herramientas
+HELP.md
+
+# Archivos sensibles
+.env
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Spring Tool Suite (STS)
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+
+# Visual Studio Code
+.vscode/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/nbdist/
+/.nb-gradle/
+
+# Evita subir builds generados por accidente dentro de src
+**/target/
+**/build/
+
+# Logs
+*.log
+logs/
