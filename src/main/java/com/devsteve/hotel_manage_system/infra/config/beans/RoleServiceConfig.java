@@ -1,6 +1,6 @@
 package com.devsteve.hotel_manage_system.infra.config.beans;
 
-import com.devsteve.hotel_manage_system.application.ports.input.auth.*;
+import com.devsteve.hotel_manage_system.application.ports.input.auth.role.*;
 import com.devsteve.hotel_manage_system.application.ports.output.RoleRepositoryPort;
 import com.devsteve.hotel_manage_system.application.usecases.RoleService;
 import org.springframework.context.annotation.Bean;

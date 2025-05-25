@@ -1,6 +1,6 @@
 package com.devsteve.hotel_manage_system.infra.adapters.input.rest;
 
-import com.devsteve.hotel_manage_system.application.ports.input.auth.*;
+import com.devsteve.hotel_manage_system.application.ports.input.auth.role.*;
 import com.devsteve.hotel_manage_system.domain.models.auth.RoleModel;
 import com.devsteve.hotel_manage_system.shared.dto.req.auth.RoleRequest;
 import com.devsteve.hotel_manage_system.shared.dto.res.auth.RoleResponse;
