@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @NoArgsConstructor @AllArgsConstructor
 @Getter @Setter
-public class RoleResponse {
+public class PermissionResponse {
     private Integer id;
     private String name;
 }
