@@ -1,13 +1,11 @@
 package com.devsteve.hotel_manage_system.infra.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -21,17 +19,18 @@ import java.util.UUID;
 @Table(name = "users")
 public class User {
     @Id
-    @ColumnDefault("gen_random_uuid()")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id", nullable = false)
     private UUID id;
 
     @Size(max = 50)
-    @Column(name = "username", length = 50)
+    @Column(name = "username", nullable = false, length = 50, unique = true)
     private String username;
 
     @Size(max = 100)
     @NotNull
-    @Column(name = "email", nullable = false, length = 100)
+    @Column(name = "email", nullable = false, length = 100, unique = true)
     private String email;
 
     @Column(name = "picture", length = Integer.MAX_VALUE)
@@ -61,4 +60,13 @@ public class User {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = Instant.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = Instant.now();
+    }
 }
