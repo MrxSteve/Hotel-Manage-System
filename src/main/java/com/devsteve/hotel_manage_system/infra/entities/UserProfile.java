@@ -27,6 +27,10 @@ public class UserProfile {
     @JoinColumn(name = "user_id", nullable = false)
     private User users;
 
+    @Size(max = 150)
+    @Column(name = "nombre_completo", length = 150)
+    private String nombreCompleto;
+
     @Size(max = 20)
     @Column(name = "dui", length = 20)
     private String dui;

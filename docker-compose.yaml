@@ -27,7 +27,7 @@ services:
       - hotel-db
     environment:
       DB_HOST: hotel-db
-      DB_PORT: ${DB_PORT}
+      DB_PORT: 5432
       DB_NAME: ${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}

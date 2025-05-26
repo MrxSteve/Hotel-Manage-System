@@ -31,6 +31,7 @@ CREATE TABLE users (
 -- PERFILES DE USUARIO
 CREATE TABLE user_profiles (
     user_id UUID PRIMARY KEY,
+    nombre_completo VARCHAR(150),
     dui VARCHAR(20),
     telefono VARCHAR(20),
     direccion TEXT,
