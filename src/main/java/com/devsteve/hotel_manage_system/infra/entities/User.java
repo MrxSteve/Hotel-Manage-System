@@ -52,6 +52,14 @@ public class User {
     @Column(name = "must_change_password")
     private Boolean mustChangePassword;
 
+    @OneToOne(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true
+    )
+    private UserProfile profile;
+
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
     private Instant createdAt;

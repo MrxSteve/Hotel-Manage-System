@@ -3,6 +3,7 @@ package com.devsteve.hotel_manage_system.infra.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -17,15 +18,16 @@ import java.util.UUID;
 @Entity
 @Table(name = "user_profiles")
 public class UserProfile {
+
     @Id
-    @Column(name = "user_id", nullable = false)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", nullable = false)
     private UUID id;
 
-    @MapsId
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
-    private User users;
+    private User user;
 
     @Size(max = 150)
     @Column(name = "nombre_completo", length = 150)
@@ -39,7 +41,7 @@ public class UserProfile {
     @Column(name = "telefono", length = 20)
     private String telefono;
 
-    @Column(name = "direccion", length = Integer.MAX_VALUE)
+    @Column(name = "direccion", columnDefinition = "TEXT")
     private String direccion;
 
     @Column(name = "fecha_nacimiento")
@@ -52,5 +54,4 @@ public class UserProfile {
     @Size(max = 50)
     @Column(name = "nacionalidad", length = 50)
     private String nacionalidad;
-
 }

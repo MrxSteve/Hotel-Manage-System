@@ -20,4 +20,5 @@ public class UserResponse {
     private Boolean mustChangePassword;
     private Instant createdAt;
     private Instant updatedAt;
+    private UserProfileResponse profile;
 }

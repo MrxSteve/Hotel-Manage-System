@@ -14,12 +14,15 @@ public class UserModel {
     private Boolean mustChangePassword;
     private Instant createdAt;
     private Instant updatedAt;
+    private UserProfileModel profile;
 
     public UserModel() {
     }
 
-    public UserModel(UUID id, String username, String email, String picture, String password, String pin,
-                     Boolean enabled, Boolean mustChangePassword, Instant createdAt, Instant updatedAt) {
+    public UserModel(UUID id, String username, String email, String picture,
+                     String password, String pin, Boolean enabled,
+                     Boolean mustChangePassword, Instant createdAt,
+                     Instant updatedAt, UserProfileModel profile) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -30,6 +33,7 @@ public class UserModel {
         this.mustChangePassword = mustChangePassword;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.profile = profile;
     }
 
     public UUID getId() {
@@ -110,5 +114,13 @@ public class UserModel {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public UserProfileModel getProfile() {
+        return profile;
+    }
+
+    public void setProfile(UserProfileModel profile) {
+        this.profile = profile;
     }
 }

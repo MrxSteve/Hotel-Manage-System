@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public class UserProfileModel {
+    private UUID id;
     private UUID userId;
     private String nombreCompleto;
     private String dui;
@@ -16,10 +17,10 @@ public class UserProfileModel {
     public UserProfileModel() {
     }
 
-    public UserProfileModel(UUID userId, String nombreCompleto,
-                            String dui, String telefono,
-                            String direccion, LocalDate fechaNacimiento,
-                            String genero, String nacionalidad) {
+    public UserProfileModel(UUID id, UUID userId, String nombreCompleto,
+                            String dui, String telefono, String direccion,
+                            LocalDate fechaNacimiento, String genero, String nacionalidad) {
+        this.id = id;
         this.userId = userId;
         this.nombreCompleto = nombreCompleto;
         this.dui = dui;
@@ -28,6 +29,14 @@ public class UserProfileModel {
         this.fechaNacimiento = fechaNacimiento;
         this.genero = genero;
         this.nacionalidad = nacionalidad;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public UUID getUserId() {

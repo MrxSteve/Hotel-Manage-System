@@ -30,7 +30,8 @@ CREATE TABLE users (
 
 -- PERFILES DE USUARIO
 CREATE TABLE user_profiles (
-    user_id UUID PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL,
     nombre_completo VARCHAR(150),
     dui VARCHAR(20),
     telefono VARCHAR(20),

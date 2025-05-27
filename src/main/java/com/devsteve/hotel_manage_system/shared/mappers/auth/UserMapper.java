@@ -5,15 +5,15 @@ import com.devsteve.hotel_manage_system.infra.entities.User;
 import com.devsteve.hotel_manage_system.shared.dto.req.auth.UpdateUserRequest;
 import com.devsteve.hotel_manage_system.shared.dto.req.auth.UserRequest;
 import com.devsteve.hotel_manage_system.shared.dto.res.auth.UserResponse;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {UserProfileMapper.class})
 public interface UserMapper {
     // Model <-> Entity
+    @Mapping(target = "profile", source = "profile")
     UserModel entityToModel(User entity);
+
+    @Mapping(target = "profile", source = "profile")
     User modelToEntity(UserModel model);
 
     // Request -> Model
@@ -24,5 +24,6 @@ public interface UserMapper {
     void updateModelFromRequest(UpdateUserRequest request, @MappingTarget UserModel model);
 
     // Model -> Response
+    @Mapping(target = "profile", source = "profile")
     UserResponse modelToResponse(UserModel model);
 }
