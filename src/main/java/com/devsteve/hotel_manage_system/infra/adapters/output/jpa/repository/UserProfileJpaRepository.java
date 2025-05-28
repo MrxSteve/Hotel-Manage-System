@@ -9,4 +9,6 @@ import java.util.UUID;
 public interface UserProfileJpaRepository extends JpaRepository<UserProfile, UUID> {
     Optional<UserProfile> findById(UUID id);
     boolean existsByDui(String dui);
+
+    Optional<UserProfile> findByUser_Id(UUID userId);
 }

@@ -1,6 +1,7 @@
 package com.devsteve.hotel_manage_system.infra.adapters.input.rest;
 
 import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.CreateUserProfileUseCase;
+import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.GetUserProfileByUserIdUseCase;
 import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.GetUserProfileUseCase;
 import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.UpdateUserProfileUseCase;
 import com.devsteve.hotel_manage_system.domain.models.auth.UserProfileModel;
@@ -23,6 +24,7 @@ public class UserProfileController {
     private final CreateUserProfileUseCase createUserProfileUseCase;
     private final UpdateUserProfileUseCase updateUserProfileUseCase;
     private final GetUserProfileUseCase getUserProfileUseCase;
+    private final GetUserProfileByUserIdUseCase getUserProfileByUserIdUseCase;
     private final UserProfileMapper userProfileMapper;
 
     @PostMapping
@@ -46,5 +48,11 @@ public class UserProfileController {
     public ResponseEntity<UserProfileResponse> getByUserId(@PathVariable UUID profileId) {
         UserProfileModel profile = getUserProfileUseCase.getProfileByUserId(profileId);
         return ResponseEntity.ok(userProfileMapper.modelToResponse(profile));
+    }
+
+    @GetMapping("/by-user/{userId}")
+    public ResponseEntity<UserProfileResponse> getProfileByUserId(@PathVariable UUID userId) {
+        UserProfileModel model = getUserProfileByUserIdUseCase.getUserProfileByUserId(userId);
+        return ResponseEntity.ok(userProfileMapper.modelToResponse(model));
     }
 }

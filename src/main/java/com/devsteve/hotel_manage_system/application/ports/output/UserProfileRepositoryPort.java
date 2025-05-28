@@ -9,4 +9,5 @@ public interface UserProfileRepositoryPort {
     UserProfileModel save(UserProfileModel model);
     Optional<UserProfileModel> findById(UUID userId);
     boolean existsByDui(String dui);
+    Optional<UserProfileModel> findByUserId(UUID userId);
 }

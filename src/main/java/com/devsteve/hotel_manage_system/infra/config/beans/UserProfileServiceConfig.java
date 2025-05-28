@@ -1,6 +1,7 @@
 package com.devsteve.hotel_manage_system.infra.config.beans;
 
 import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.CreateUserProfileUseCase;
+import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.GetUserProfileByUserIdUseCase;
 import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.GetUserProfileUseCase;
 import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.UpdateUserProfileUseCase;
 import com.devsteve.hotel_manage_system.application.ports.output.UserProfileRepositoryPort;
@@ -28,6 +29,11 @@ public class UserProfileServiceConfig {
 
     @Bean
     public GetUserProfileUseCase getUserProfileUseCase(UserProfileService userProfileService) {
+        return userProfileService;
+    }
+
+    @Bean
+    public GetUserProfileByUserIdUseCase getUserProfileByUserIdUseCase(UserProfileService userProfileService) {
         return userProfileService;
     }
 }

@@ -1,6 +1,7 @@
 package com.devsteve.hotel_manage_system.application.usecases;
 
 import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.CreateUserProfileUseCase;
+import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.GetUserProfileByUserIdUseCase;
 import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.GetUserProfileUseCase;
 import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.UpdateUserProfileUseCase;
 import com.devsteve.hotel_manage_system.application.ports.output.UserProfileRepositoryPort;
@@ -12,7 +13,8 @@ import java.util.UUID;
 public class UserProfileService implements
         CreateUserProfileUseCase,
         UpdateUserProfileUseCase,
-        GetUserProfileUseCase {
+        GetUserProfileUseCase,
+        GetUserProfileByUserIdUseCase {
     private final UserProfileRepositoryPort userProfileRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
 
@@ -26,13 +28,16 @@ public class UserProfileService implements
         this.userRepositoryPort.findById(model.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found for ID: " + model.getUserId()));
 
+        if (userProfileRepositoryPort.findByUserId(model.getUserId()).isPresent()) {
+            throw new IllegalArgumentException("User profile already exists for user ID: " + model.getUserId());
+        }
+
         if (userProfileRepositoryPort.existsByDui(model.getDui())) {
             throw new IllegalArgumentException("User profile with Document " + model.getDui() + " already exists.");
         }
 
         return userProfileRepositoryPort.save(model);
     }
-
 
     @Override
     public UserProfileModel getProfileByUserId(UUID userId) {
@@ -79,5 +84,11 @@ public class UserProfileService implements
         }
 
         return userProfileRepositoryPort.save(existing);
+    }
+
+    @Override
+    public UserProfileModel getUserProfileByUserId(UUID userId) {
+        return userProfileRepositoryPort.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Profile not found for user whit ID: " + userId));
     }
 }

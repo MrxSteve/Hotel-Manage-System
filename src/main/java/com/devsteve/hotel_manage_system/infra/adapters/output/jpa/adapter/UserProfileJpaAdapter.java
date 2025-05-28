@@ -43,4 +43,10 @@ public class UserProfileJpaAdapter implements UserProfileRepositoryPort {
     public boolean existsByDui(String dui) {
         return userProfileJpaRepository.existsByDui(dui);
     }
+
+    @Override
+    public Optional<UserProfileModel> findByUserId(UUID userId) {
+        return userProfileJpaRepository.findByUser_Id(userId)
+                .map(userProfileMapper::entityToModel);
+    }
 }
