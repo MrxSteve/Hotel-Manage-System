@@ -1,6 +1,7 @@
 package com.devsteve.hotel_manage_system.domain.models.auth;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 public class UserModel {
@@ -15,6 +16,7 @@ public class UserModel {
     private Instant createdAt;
     private Instant updatedAt;
     private UserProfileModel profile;
+    private List<RoleModel> roles;
 
     public UserModel() {
     }
@@ -22,7 +24,7 @@ public class UserModel {
     public UserModel(UUID id, String username, String email, String picture,
                      String password, String pin, Boolean enabled,
                      Boolean mustChangePassword, Instant createdAt,
-                     Instant updatedAt, UserProfileModel profile) {
+                     Instant updatedAt, UserProfileModel profile, List<RoleModel> roles) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -34,6 +36,7 @@ public class UserModel {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.profile = profile;
+        this.roles = roles;
     }
 
     public UUID getId() {
@@ -122,5 +125,13 @@ public class UserModel {
 
     public void setProfile(UserProfileModel profile) {
         this.profile = profile;
+    }
+
+    public List<RoleModel> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RoleModel> roles) {
+        this.roles = roles;
     }
 }

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @NoArgsConstructor @AllArgsConstructor
@@ -21,4 +22,5 @@ public class UserResponse {
     private Instant createdAt;
     private Instant updatedAt;
     private UserProfileResponse profile;
+    private List<RoleResponse> roles;
 }

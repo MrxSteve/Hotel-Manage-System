@@ -7,7 +7,7 @@ import com.devsteve.hotel_manage_system.shared.dto.req.auth.UserRequest;
 import com.devsteve.hotel_manage_system.shared.dto.res.auth.UserResponse;
 import org.mapstruct.*;
 
-@Mapper(componentModel = "spring", uses = {UserProfileMapper.class})
+@Mapper(componentModel = "spring", uses = {UserProfileMapper.class, RoleMapper.class})
 public interface UserMapper {
     // Model <-> Entity
     @Mapping(target = "profile", source = "profile")
@@ -25,5 +25,6 @@ public interface UserMapper {
 
     // Model -> Response
     @Mapping(target = "profile", source = "profile")
+    @Mapping(target = "roles", source = "roles")
     UserResponse modelToResponse(UserModel model);
 }
