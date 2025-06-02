@@ -19,7 +19,8 @@ import java.time.Instant;
 @Table(name = "refresh_tokens")
 public class RefreshToken {
     @Id
-    @ColumnDefault("nextval('refresh_tokens_id_seq')")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "refresh_tokens_id_gen")
+    @SequenceGenerator(name = "refresh_tokens_id_gen", sequenceName = "refresh_tokens_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Integer id;
 
