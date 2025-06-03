@@ -6,6 +6,7 @@ import com.devsteve.hotel_manage_system.application.ports.input.auth.user_role.R
 import com.devsteve.hotel_manage_system.domain.models.auth.UserModel;
 import com.devsteve.hotel_manage_system.shared.dto.req.auth.AssignRoleToUserRequest;
 import com.devsteve.hotel_manage_system.shared.dto.res.auth.UserResponse;
+import com.devsteve.hotel_manage_system.shared.mappers.auth.UserMapper;
 import com.devsteve.hotel_manage_system.shared.mappers.auth.UserRoleMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/users/{userId}/roles")
+@RequestMapping("/api/roles/{roleId}/users")
 @RequiredArgsConstructor
 public class UserRoleController {
 
@@ -25,16 +26,17 @@ public class UserRoleController {
     private final RemoveRoleUseCase removeRoleUseCase;
     private final GetUsersByRoleUseCase getUsersByRoleUseCase;
     private final UserRoleMapper userRoleMapper;
+    private final UserMapper userMapper;
 
     @PostMapping
     public ResponseEntity<Void> assignRole(
-            @PathVariable UUID userId,
+            @PathVariable Integer roleId,
             @Valid @RequestBody AssignRoleToUserRequest request) {
-        assignRoleUseCase.assignRole(userId, request.getRoleId());
+        assignRoleUseCase.assignRole(request.getUserId(), roleId);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{roleId}")
+    @DeleteMapping("/{userId}")
     public ResponseEntity<Void> removeRole(
             @PathVariable UUID userId,
             @PathVariable Integer roleId) {
@@ -42,14 +44,14 @@ public class UserRoleController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/by-role/{roleId}")
+    @GetMapping
     public ResponseEntity<List<UserResponse>> getUsersByRole(
             @PathVariable Integer roleId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         List<UserModel> models = getUsersByRoleUseCase.getUsersByRole(roleId, page, size);
         List<UserResponse> responses = models.stream()
-                .map(userRoleMapper::modelToResponse)
+                .map(userMapper::modelToResponse)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(responses);
     }

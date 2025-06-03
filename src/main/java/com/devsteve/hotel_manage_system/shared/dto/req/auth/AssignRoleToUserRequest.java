@@ -6,9 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @NoArgsConstructor @AllArgsConstructor
 @Getter @Setter
 public class AssignRoleToUserRequest {
-    @NotNull(message = "Role ID is required")
-    private Integer roleId;
+    @NotNull(message = "User ID is required")
+    private UUID userId;
 }

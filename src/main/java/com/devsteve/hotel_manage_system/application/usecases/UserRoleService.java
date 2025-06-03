@@ -61,10 +61,7 @@ public class UserRoleService implements
 
     @Override
     public List<UserModel> getUsersByRole(Integer roleId, int page, int size) {
-        return userRoleRepositoryPort.findByRoleId(roleId, page, size)
-                .stream()
-                .map(UserRoleModel::getUser)
-                .toList();
+        return userRoleRepositoryPort.findByRoleId(roleId, page, size);
     }
 
     private void validateUserAndRoleExist(UUID userId, Integer roleId) {

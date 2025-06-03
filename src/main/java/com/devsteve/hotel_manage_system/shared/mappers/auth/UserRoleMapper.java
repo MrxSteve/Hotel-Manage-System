@@ -7,6 +7,7 @@ import com.devsteve.hotel_manage_system.infra.entities.UserRole;
 import com.devsteve.hotel_manage_system.infra.entities.UserRoleId;
 import com.devsteve.hotel_manage_system.shared.dto.res.auth.UserResponse;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {UserMapper.class, RoleMapper.class})
 public interface UserRoleMapper {
@@ -16,7 +17,4 @@ public interface UserRoleMapper {
 
     UserRoleIdModel toModelId(UserRoleId id);
     UserRoleId toEntityId(UserRoleIdModel idModel);
-
-    // Model <-> DTO
-    UserResponse modelToResponse(UserModel model);
 }
