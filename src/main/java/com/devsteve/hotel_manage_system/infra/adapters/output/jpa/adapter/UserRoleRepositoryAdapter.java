@@ -50,10 +50,9 @@ public class UserRoleRepositoryAdapter implements UserRoleRepositoryPort {
                 .getContent()
                 .stream()
                 .map(userRole -> {
-                    // Obtener el User
+
                     UserModel userModel = userMapper.entityToModel(userRole.getUser());
 
-                    // Cargar roles del usuario (igual que en UserJpaAdapter)
                     List<UserRole> userRoles = userRoleJpaRepository.findByUser_Id(userModel.getId());
                     List<RoleModel> roles = userRoles.stream()
                             .map(ur -> roleMapper.entityToModel(ur.getRole()))
