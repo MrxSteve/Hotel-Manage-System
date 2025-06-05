@@ -1,6 +1,7 @@
 package com.devsteve.hotel_manage_system.infra.config.beans;
 
 import com.devsteve.hotel_manage_system.application.ports.input.auth.users.*;
+import com.devsteve.hotel_manage_system.application.ports.output.PasswordEncoderPort;
 import com.devsteve.hotel_manage_system.application.ports.output.UserRepositoryPort;
 import com.devsteve.hotel_manage_system.application.usecases.UserService;
 import org.springframework.context.annotation.Bean;
@@ -9,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class UserServiceConfig {
     @Bean
-    public UserService userService(UserRepositoryPort userRepositoryPort) {
-        return new UserService(userRepositoryPort);
+    public UserService userService(UserRepositoryPort userRepositoryPort, PasswordEncoderPort passwordEncoderPort) {
+        return new UserService(userRepositoryPort, passwordEncoderPort);
     }
 
     @Bean

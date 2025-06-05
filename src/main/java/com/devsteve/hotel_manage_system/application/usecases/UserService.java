@@ -1,6 +1,7 @@
 package com.devsteve.hotel_manage_system.application.usecases;
 
 import com.devsteve.hotel_manage_system.application.ports.input.auth.users.*;
+import com.devsteve.hotel_manage_system.application.ports.output.PasswordEncoderPort;
 import com.devsteve.hotel_manage_system.application.ports.output.UserRepositoryPort;
 import com.devsteve.hotel_manage_system.domain.models.auth.UserModel;
 
@@ -19,9 +20,11 @@ public class UserService implements
         DeleteUserByIdUseCase,
         GetUsersByFilterUseCase{
     private final UserRepositoryPort userRepositoryPort;
+    private final PasswordEncoderPort passwordEncoderPort;
 
-    public UserService(UserRepositoryPort userRepositoryPort) {
+    public UserService(UserRepositoryPort userRepositoryPort, PasswordEncoderPort passwordEncoderPort) {
         this.userRepositoryPort = userRepositoryPort;
+        this.passwordEncoderPort = passwordEncoderPort;
     }
 
     @Override
@@ -36,6 +39,8 @@ public class UserService implements
 
         userModel.setEnabled(true);
         userModel.setMustChangePassword(true);
+
+        userModel.setPassword(passwordEncoderPort.encode(userModel.getPassword()));
 
         return userRepositoryPort.save(userModel);
     }
@@ -61,7 +66,7 @@ public class UserService implements
     @Override
     public void changePassword(UUID userId, String newPassword) {
         UserModel user = this.getUserById(userId);
-        user.setPassword(newPassword);
+        user.setPassword(passwordEncoderPort.encode(newPassword));
         userRepositoryPort.save(user);
     }
 

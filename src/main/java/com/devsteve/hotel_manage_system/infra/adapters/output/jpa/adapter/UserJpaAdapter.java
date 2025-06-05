@@ -40,6 +40,7 @@ public class UserJpaAdapter implements UserRepositoryPort {
             entity = userJpaRepository.findById(model.getId())
                     .orElseThrow(() -> new RuntimeException("User not found with ID: " + model.getId()));
 
+
             // actualizar solo los campos que vienen del model
             entity.setUsername(model.getUsername());
             entity.setEmail(model.getEmail());
