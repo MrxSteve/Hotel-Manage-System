@@ -5,8 +5,7 @@ import com.devsteve.hotel_manage_system.infra.entities.UserProfile;
 import com.devsteve.hotel_manage_system.shared.dto.req.auth.UpdateUserProfileRequest;
 import com.devsteve.hotel_manage_system.shared.dto.req.auth.UserProfileRequest;
 import com.devsteve.hotel_manage_system.shared.dto.res.auth.UserProfileResponse;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface UserProfileMapper {
@@ -14,7 +13,8 @@ public interface UserProfileMapper {
     @Mapping(target = "id", ignore = true)
     UserProfileModel requestToModel(UserProfileRequest request);
 
-    UserProfileModel updateRequestToModel(UpdateUserProfileRequest request);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateRequestToModel(UpdateUserProfileRequest request, @MappingTarget UserProfileModel model);
 
     // MODEL -> DTO
     @Mapping(target = "userId", source = "userId")

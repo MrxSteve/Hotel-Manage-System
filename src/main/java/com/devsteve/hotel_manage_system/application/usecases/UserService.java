@@ -18,7 +18,8 @@ public class UserService implements
         UpdatePasswordStatusUseCase,
         UpdateUserUseCase,
         DeleteUserByIdUseCase,
-        GetUsersByFilterUseCase{
+        GetUsersByFilterUseCase,
+        UpdateMyUserUseCase {
     private final UserRepositoryPort userRepositoryPort;
     private final PasswordEncoderPort passwordEncoderPort;
 
@@ -131,5 +132,41 @@ public class UserService implements
                 mustChangePassword,
                 page,
                 size);
+    }
+
+    @Override
+    public UserModel updateMyUser(UserModel user) {
+        UserModel existingUser = userRepositoryPort.findById(user.getId())
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + user.getId()));
+
+        if (user.getUsername() != null &&
+                userRepositoryPort.existsByUsername(user.getUsername()) &&
+                !existingUser.getUsername().equals(user.getUsername())) {
+            throw new IllegalArgumentException("Username " + user.getUsername() + " is already in use.");
+        }
+
+        if (user.getEmail() != null &&
+                userRepositoryPort.existsByEmail(user.getEmail()) &&
+                !existingUser.getEmail().equals(user.getEmail())) {
+            throw new IllegalArgumentException("Email " + user.getEmail() + " is already in use.");
+        }
+
+        if (user.getUsername() != null) {
+            existingUser.setUsername(user.getUsername());
+        }
+
+        if (user.getEmail() != null) {
+            existingUser.setEmail(user.getEmail());
+        }
+
+        if (user.getPicture() != null) {
+            existingUser.setPicture(user.getPicture());
+        }
+
+        if (user.getPin() != null) {
+            existingUser.setPin(user.getPin());
+        }
+
+        return userRepositoryPort.save(existingUser);
     }
 }

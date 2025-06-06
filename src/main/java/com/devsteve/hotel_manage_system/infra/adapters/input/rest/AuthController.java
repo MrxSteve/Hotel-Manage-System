@@ -1,13 +1,22 @@
 package com.devsteve.hotel_manage_system.infra.adapters.input.rest;
 
+import com.devsteve.hotel_manage_system.application.ports.input.auth.users.UpdateMyUserUseCase;
+import com.devsteve.hotel_manage_system.application.ports.input.auth.users.UpdateUserUseCase;
+import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.UpdateMyProfileUseCase;
+import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.UpdateUserProfileUseCase;
 import com.devsteve.hotel_manage_system.domain.models.auth.UserModel;
+import com.devsteve.hotel_manage_system.domain.models.auth.UserProfileModel;
 import com.devsteve.hotel_manage_system.infra.security.dto.req.LoginRequest;
 import com.devsteve.hotel_manage_system.infra.security.dto.req.RefreshTokenRequest;
 import com.devsteve.hotel_manage_system.infra.security.dto.res.LoginResponse;
 import com.devsteve.hotel_manage_system.infra.security.services.AuthService;
 import com.devsteve.hotel_manage_system.infra.security.services.CurrentUserService;
+import com.devsteve.hotel_manage_system.shared.dto.req.auth.UpdateUserProfileRequest;
+import com.devsteve.hotel_manage_system.shared.dto.req.auth.UpdateUserRequest;
+import com.devsteve.hotel_manage_system.shared.dto.res.auth.UserProfileResponse;
 import com.devsteve.hotel_manage_system.shared.dto.res.auth.UserResponse;
 import com.devsteve.hotel_manage_system.shared.mappers.auth.UserMapper;
+import com.devsteve.hotel_manage_system.shared.mappers.auth.UserProfileMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +29,9 @@ public class AuthController {
     private final AuthService authService;
     private final CurrentUserService currentUserService;
     private final UserMapper userMapper;
+    private final UpdateMyUserUseCase updateMyUserUseCase;
+    private final UpdateMyProfileUseCase updateMyProfileUseCase;
+    private final UserProfileMapper userProfileMapper;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
@@ -37,5 +49,32 @@ public class AuthController {
         UserModel user = currentUserService.getCurrentUser();
         UserResponse response = userMapper.modelToResponse(user);
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<UserResponse> updateMyUser(@Valid @RequestBody UpdateUserRequest request) {
+        UserModel currentUser = currentUserService.getCurrentUser();
+
+        userMapper.updateModelFromRequest(request, currentUser);
+
+        UserModel updatedUser = updateMyUserUseCase.updateMyUser(currentUser);
+
+        return ResponseEntity.ok(userMapper.modelToResponse(updatedUser));
+    }
+
+    @PutMapping("/me/profile")
+    public ResponseEntity<UserProfileResponse> updateMyProfile(@Valid @RequestBody UpdateUserProfileRequest request) {
+        UserModel currentUser = currentUserService.getCurrentUser();
+
+        UserProfileModel profile = currentUser.getProfile();
+        if (profile == null) {
+            throw new RuntimeException("User has no profile");
+        }
+
+        userProfileMapper.updateRequestToModel(request, profile);
+
+        UserProfileModel updatedProfile = updateMyProfileUseCase.updateMyProfile(profile);
+
+        return ResponseEntity.ok(userProfileMapper.modelToResponse(updatedProfile));
     }
 }

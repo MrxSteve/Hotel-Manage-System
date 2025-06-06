@@ -38,9 +38,9 @@ public class UserProfileController {
     public ResponseEntity<UserProfileResponse> update(
             @PathVariable UUID profileId,
             @Valid @RequestBody UpdateUserProfileRequest request) {
-
-        UserProfileModel model = userProfileMapper.updateRequestToModel(request);
-        UserProfileModel updated = updateUserProfileUseCase.update(profileId, model);
+        UserProfileModel existing = getUserProfileByUserIdUseCase.getUserProfileByUserId(profileId);
+        userProfileMapper.updateRequestToModel(request, existing);
+        UserProfileModel updated = updateUserProfileUseCase.update(profileId, existing);
         return ResponseEntity.ok(userProfileMapper.modelToResponse(updated));
     }
 

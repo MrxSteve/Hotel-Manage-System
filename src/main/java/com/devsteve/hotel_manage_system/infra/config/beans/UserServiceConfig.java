@@ -58,4 +58,9 @@ public class UserServiceConfig {
     public GetUsersByFilterUseCase getUsersByFilterUseCase(UserService userService) {
         return userService;
     }
+
+    @Bean
+    public UpdateMyUserUseCase updateMyUserUseCase(UserService userService) {
+        return userService;
+    }
 }

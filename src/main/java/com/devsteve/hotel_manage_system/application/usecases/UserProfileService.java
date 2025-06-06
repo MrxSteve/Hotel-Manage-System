@@ -1,9 +1,6 @@
 package com.devsteve.hotel_manage_system.application.usecases;
 
-import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.CreateUserProfileUseCase;
-import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.GetUserProfileByUserIdUseCase;
-import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.GetUserProfileUseCase;
-import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.UpdateUserProfileUseCase;
+import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.*;
 import com.devsteve.hotel_manage_system.application.ports.output.UserProfileRepositoryPort;
 import com.devsteve.hotel_manage_system.application.ports.output.UserRepositoryPort;
 import com.devsteve.hotel_manage_system.domain.models.auth.UserProfileModel;
@@ -14,7 +11,8 @@ public class UserProfileService implements
         CreateUserProfileUseCase,
         UpdateUserProfileUseCase,
         GetUserProfileUseCase,
-        GetUserProfileByUserIdUseCase {
+        GetUserProfileByUserIdUseCase,
+        UpdateMyProfileUseCase {
     private final UserProfileRepositoryPort userProfileRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
 
@@ -90,5 +88,47 @@ public class UserProfileService implements
     public UserProfileModel getUserProfileByUserId(UUID userId) {
         return userProfileRepositoryPort.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Profile not found for user whit ID: " + userId));
+    }
+
+    @Override
+    public UserProfileModel updateMyProfile(UserProfileModel profile) {
+        UserProfileModel existing = userProfileRepositoryPort.findByUserId(profile.getUserId())
+                .orElseThrow(() -> new RuntimeException("User has no profile to update."));
+
+        if (existing.getDui() != null &&
+                userProfileRepositoryPort.existsByDui(profile.getDui()) &&
+                !existing.getDui().equals(profile.getDui())) {
+            throw new IllegalArgumentException("Document " + profile.getDui() + " is already in use.");
+        }
+
+        if (profile.getNombreCompleto() != null) {
+            existing.setNombreCompleto(profile.getNombreCompleto());
+        }
+
+        if (profile.getDui() != null) {
+            existing.setDui(profile.getDui());
+        }
+
+        if (profile.getTelefono() != null) {
+            existing.setTelefono(profile.getTelefono());
+        }
+
+        if (profile.getDireccion() != null) {
+            existing.setDireccion(profile.getDireccion());
+        }
+
+        if (profile.getFechaNacimiento() != null) {
+            existing.setFechaNacimiento(profile.getFechaNacimiento());
+        }
+
+        if (profile.getGenero() != null) {
+            existing.setGenero(profile.getGenero());
+        }
+
+        if (profile.getNacionalidad() != null) {
+            existing.setNacionalidad(profile.getNacionalidad());
+        }
+
+        return userProfileRepositoryPort.save(existing);
     }
 }
