@@ -6,6 +6,7 @@ import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profi
 import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.UpdateUserProfileUseCase;
 import com.devsteve.hotel_manage_system.domain.models.auth.UserModel;
 import com.devsteve.hotel_manage_system.domain.models.auth.UserProfileModel;
+import com.devsteve.hotel_manage_system.infra.security.dto.req.ChangeMyPasswordRequest;
 import com.devsteve.hotel_manage_system.infra.security.dto.req.LoginRequest;
 import com.devsteve.hotel_manage_system.infra.security.dto.req.RefreshTokenRequest;
 import com.devsteve.hotel_manage_system.infra.security.dto.res.LoginResponse;
@@ -77,4 +78,11 @@ public class AuthController {
 
         return ResponseEntity.ok(userProfileMapper.modelToResponse(updatedProfile));
     }
+
+    @PutMapping("/me/password")
+    public ResponseEntity<Void> changeMyPassword(@Valid @RequestBody ChangeMyPasswordRequest request) {
+        currentUserService.changeMyPassword(request.getCurrentPassword(), request.getNewPassword());
+        return ResponseEntity.noContent().build();
+    }
+
 }

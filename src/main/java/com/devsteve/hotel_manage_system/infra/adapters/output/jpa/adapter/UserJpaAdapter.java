@@ -49,6 +49,10 @@ public class UserJpaAdapter implements UserRepositoryPort {
             entity.setEnabled(model.getEnabled());
             entity.setMustChangePassword(model.getMustChangePassword());
 
+            // actualizar password
+            if (model.getPassword() != null) {
+                entity.setPassword(model.getPassword());
+            }
         }
 
         User savedEntity = userJpaRepository.save(entity);
