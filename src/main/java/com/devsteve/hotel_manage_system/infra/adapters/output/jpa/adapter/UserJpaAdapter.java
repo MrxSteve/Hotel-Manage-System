@@ -163,4 +163,20 @@ public class UserJpaAdapter implements UserRepositoryPort {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Optional<UserModel> findByUsername(String username) {
+        return userJpaRepository.findByUsername(username)
+                .map(user -> {
+                    UserModel model = userMapper.entityToModel(user);
+
+                    List<UserRole> userRoles = userRoleJpaRepository.findByUser_Id(user.getId());
+                    List<RoleModel> roles = userRoles.stream()
+                            .map(userRole -> roleMapper.entityToModel(userRole.getRole()))
+                            .toList();
+
+                    model.setRoles(roles);
+
+                    return model;
+                });
+    }
 }

@@ -1,6 +1,7 @@
 package com.devsteve.hotel_manage_system.infra.adapters.input.rest;
 
 import com.devsteve.hotel_manage_system.infra.security.dto.req.LoginRequest;
+import com.devsteve.hotel_manage_system.infra.security.dto.req.RefreshTokenRequest;
 import com.devsteve.hotel_manage_system.infra.security.dto.res.LoginResponse;
 import com.devsteve.hotel_manage_system.infra.security.services.AuthService;
 import jakarta.validation.Valid;
@@ -21,5 +22,10 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         LoginResponse response = authService.authenticateUser(request);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<LoginResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(authService.refreshAccessToken(request.getRefreshToken()));
     }
 }

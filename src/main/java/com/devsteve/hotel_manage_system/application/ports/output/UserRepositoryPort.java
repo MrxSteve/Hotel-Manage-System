@@ -22,4 +22,6 @@ public interface UserRepositoryPort {
             Optional<Boolean> mustChangePassword,
             int page,
             int size);
+
+    Optional<UserModel> findByUsername(String username);
 }

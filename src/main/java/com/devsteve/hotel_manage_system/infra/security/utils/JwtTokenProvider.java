@@ -35,7 +35,7 @@ public class JwtTokenProvider {
         key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(String subject, List<String> roles) {
+    public String generateJwtToken(String subject, List<String> roles) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", roles);
 
