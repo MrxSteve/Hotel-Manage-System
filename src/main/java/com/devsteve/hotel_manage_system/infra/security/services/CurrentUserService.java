@@ -32,6 +32,8 @@ public class CurrentUserService {
 
         currentUser.setPassword(passwordEncoderPort.encode(newPassword));
 
+        currentUser.setMustChangePassword(false);
+
         userRepositoryPort.save(currentUser);
     }
 }

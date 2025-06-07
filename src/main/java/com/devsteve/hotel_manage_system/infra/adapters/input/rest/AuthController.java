@@ -94,4 +94,10 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/me/must-change-password")
+    public ResponseEntity<Boolean> mustChangePassword() {
+        UserModel currentUser = currentUserService.getCurrentUser();
+        return ResponseEntity.ok(currentUser.getMustChangePassword());
+    }
+
 }
