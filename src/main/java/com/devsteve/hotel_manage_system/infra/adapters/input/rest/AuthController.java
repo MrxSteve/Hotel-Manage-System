@@ -4,6 +4,7 @@ import com.devsteve.hotel_manage_system.application.ports.input.auth.users.Updat
 import com.devsteve.hotel_manage_system.application.ports.input.auth.users.UpdateUserUseCase;
 import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.UpdateMyProfileUseCase;
 import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profile.UpdateUserProfileUseCase;
+import com.devsteve.hotel_manage_system.domain.models.auth.PermissionModel;
 import com.devsteve.hotel_manage_system.domain.models.auth.UserModel;
 import com.devsteve.hotel_manage_system.domain.models.auth.UserProfileModel;
 import com.devsteve.hotel_manage_system.infra.security.dto.req.ChangeMyPasswordRequest;
@@ -15,14 +16,18 @@ import com.devsteve.hotel_manage_system.infra.security.services.AuthService;
 import com.devsteve.hotel_manage_system.infra.security.services.CurrentUserService;
 import com.devsteve.hotel_manage_system.shared.dto.req.auth.UpdateUserProfileRequest;
 import com.devsteve.hotel_manage_system.shared.dto.req.auth.UpdateUserRequest;
+import com.devsteve.hotel_manage_system.shared.dto.res.auth.PermissionResponse;
 import com.devsteve.hotel_manage_system.shared.dto.res.auth.UserProfileResponse;
 import com.devsteve.hotel_manage_system.shared.dto.res.auth.UserResponse;
+import com.devsteve.hotel_manage_system.shared.mappers.auth.PermissionMapper;
 import com.devsteve.hotel_manage_system.shared.mappers.auth.UserMapper;
 import com.devsteve.hotel_manage_system.shared.mappers.auth.UserProfileMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -34,6 +39,7 @@ public class AuthController {
     private final UpdateMyUserUseCase updateMyUserUseCase;
     private final UpdateMyProfileUseCase updateMyProfileUseCase;
     private final UserProfileMapper userProfileMapper;
+    private final PermissionMapper permissionMapper;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
@@ -98,6 +104,17 @@ public class AuthController {
     public ResponseEntity<Boolean> mustChangePassword() {
         UserModel currentUser = currentUserService.getCurrentUser();
         return ResponseEntity.ok(currentUser.getMustChangePassword());
+    }
+
+    @GetMapping("/me/permissions")
+    public ResponseEntity<List<PermissionResponse>> getMyPermissions() {
+        List<PermissionModel> models = currentUserService.getMyPermissions();
+
+        List<PermissionResponse> responses = models.stream()
+                .map(permissionMapper::modelToResponse)
+                .toList();
+
+        return ResponseEntity.ok(responses);
     }
 
 }
