@@ -14,7 +14,7 @@ VALUES (
     gen_random_uuid(),
     'admin',
     'admin@hotel.com',
-    '$2a$10$W.ZvZEv8WmtEKK27pNTzjefcphNYU1VTe7ZmTwQGJ46B7k9MHXkAu',
+    '$2a$10$wd3rJfx0/f9d1LdeMmMcZedDtczm0/bpCRoohmpMHJL5R/3J5yF9K',
     TRUE,
     TRUE
 );
