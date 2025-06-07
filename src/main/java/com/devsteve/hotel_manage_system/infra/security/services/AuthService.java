@@ -6,6 +6,7 @@ import com.devsteve.hotel_manage_system.domain.models.auth.RefreshTokenModel;
 import com.devsteve.hotel_manage_system.domain.models.auth.RoleModel;
 import com.devsteve.hotel_manage_system.domain.models.auth.UserModel;
 import com.devsteve.hotel_manage_system.infra.security.dto.req.LoginRequest;
+import com.devsteve.hotel_manage_system.infra.security.dto.req.LogoutRequest;
 import com.devsteve.hotel_manage_system.infra.security.dto.res.LoginResponse;
 import com.devsteve.hotel_manage_system.infra.security.utils.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -28,6 +30,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepositoryPort refreshTokenRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
+    private final CurrentUserService currentUserService;
 
     private static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14);
 
@@ -88,4 +91,20 @@ public class AuthService {
 
         return new LoginResponse(accessToken, refreshTokenString);
     }
+
+    @Transactional
+    public void logout(LogoutRequest request) {
+
+        RefreshTokenModel refreshToken = refreshTokenRepositoryPort.findByToken(request.getRefreshToken())
+                .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
+
+        UserModel currentUser = currentUserService.getCurrentUser();
+
+        if (!refreshToken.getUserId().equals(currentUser.getId())) {
+            throw new RuntimeException("You cannot logout another user's token.");
+        }
+
+        refreshTokenRepositoryPort.deleteById(refreshToken.getId());
+    }
+
 }

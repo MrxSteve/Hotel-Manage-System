@@ -8,6 +8,7 @@ import com.devsteve.hotel_manage_system.domain.models.auth.UserModel;
 import com.devsteve.hotel_manage_system.domain.models.auth.UserProfileModel;
 import com.devsteve.hotel_manage_system.infra.security.dto.req.ChangeMyPasswordRequest;
 import com.devsteve.hotel_manage_system.infra.security.dto.req.LoginRequest;
+import com.devsteve.hotel_manage_system.infra.security.dto.req.LogoutRequest;
 import com.devsteve.hotel_manage_system.infra.security.dto.req.RefreshTokenRequest;
 import com.devsteve.hotel_manage_system.infra.security.dto.res.LoginResponse;
 import com.devsteve.hotel_manage_system.infra.security.services.AuthService;
@@ -82,6 +83,14 @@ public class AuthController {
     @PutMapping("/me/password")
     public ResponseEntity<Void> changeMyPassword(@Valid @RequestBody ChangeMyPasswordRequest request) {
         currentUserService.changeMyPassword(request.getCurrentPassword(), request.getNewPassword());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@Valid @RequestBody LogoutRequest request) {
+
+        authService.logout(request);
+
         return ResponseEntity.noContent().build();
     }
 
