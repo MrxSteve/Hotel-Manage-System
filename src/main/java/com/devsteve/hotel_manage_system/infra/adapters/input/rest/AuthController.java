@@ -7,10 +7,7 @@ import com.devsteve.hotel_manage_system.application.ports.input.auth.users.profi
 import com.devsteve.hotel_manage_system.domain.models.auth.PermissionModel;
 import com.devsteve.hotel_manage_system.domain.models.auth.UserModel;
 import com.devsteve.hotel_manage_system.domain.models.auth.UserProfileModel;
-import com.devsteve.hotel_manage_system.infra.security.dto.req.ChangeMyPasswordRequest;
-import com.devsteve.hotel_manage_system.infra.security.dto.req.LoginRequest;
-import com.devsteve.hotel_manage_system.infra.security.dto.req.LogoutRequest;
-import com.devsteve.hotel_manage_system.infra.security.dto.req.RefreshTokenRequest;
+import com.devsteve.hotel_manage_system.infra.security.dto.req.*;
 import com.devsteve.hotel_manage_system.infra.security.dto.res.LoginResponse;
 import com.devsteve.hotel_manage_system.infra.security.services.AuthService;
 import com.devsteve.hotel_manage_system.infra.security.services.CurrentUserService;
@@ -115,6 +112,12 @@ public class AuthController {
                 .toList();
 
         return ResponseEntity.ok(responses);
+    }
+
+    @PostMapping("/oauth2/google")
+    public ResponseEntity<LoginResponse> oauth2GoogleLogin(@Valid @RequestBody OAuth2GoogleLoginRequest request) {
+        LoginResponse response = authService.oauth2GoogleLogin(request.getIdToken());
+        return ResponseEntity.ok(response);
     }
 
 }

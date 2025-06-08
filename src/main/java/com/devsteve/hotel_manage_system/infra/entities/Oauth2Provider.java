@@ -17,7 +17,8 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "oauth2_providers")
 public class Oauth2Provider {
     @Id
-    @ColumnDefault("nextval('oauth2_providers_id_seq')")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "oauth2_providers_id_gen")
+    @SequenceGenerator(name = "oauth2_providers_id_gen", sequenceName = "oauth2_providers_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Integer id;
 
