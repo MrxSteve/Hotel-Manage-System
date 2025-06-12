@@ -15,11 +15,14 @@ public class RoomModel {
     private RoomTypeModel roomType;
     private RoomStatusModel status;
     private List<RoomPriceModel> precios;
+    private List<RoomImageModel> imagenes;
 
     public RoomModel() {
     }
 
-    public RoomModel(UUID id, Integer numeroHabitacion, Integer capacidad, String descripcion, Instant createdAt, Instant updatedAt, RoomTypeModel roomType, RoomStatusModel status, List<RoomPriceModel> precios) {
+    public RoomModel(UUID id, Integer numeroHabitacion, Integer capacidad, String descripcion,
+                     Instant createdAt, Instant updatedAt, RoomTypeModel roomType,
+                     RoomStatusModel status, List<RoomPriceModel> precios, List<RoomImageModel> imagenes) {
         this.id = id;
         this.numeroHabitacion = numeroHabitacion;
         this.capacidad = capacidad;
@@ -29,6 +32,7 @@ public class RoomModel {
         this.roomType = roomType;
         this.status = status;
         this.precios = precios;
+        this.imagenes = imagenes;
     }
 
     public UUID getId() {
@@ -101,5 +105,13 @@ public class RoomModel {
 
     public void setPrecios(List<RoomPriceModel> precios) {
         this.precios = precios;
+    }
+
+    public List<RoomImageModel> getImagenes() {
+        return imagenes;
+    }
+
+    public void setImagenes(List<RoomImageModel> imagenes) {
+        this.imagenes = imagenes;
     }
 }

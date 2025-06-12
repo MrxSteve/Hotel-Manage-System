@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -16,7 +17,8 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "room_images")
 public class RoomImage {
     @Id
-    @ColumnDefault("nextval('room_images_id_seq')")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "room_images_id_gen")
+    @SequenceGenerator(name = "room_images_id_gen", sequenceName = "room_images_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Integer id;
 

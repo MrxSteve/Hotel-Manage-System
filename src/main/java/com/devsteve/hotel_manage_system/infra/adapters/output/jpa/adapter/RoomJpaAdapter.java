@@ -2,10 +2,7 @@ package com.devsteve.hotel_manage_system.infra.adapters.output.jpa.adapter;
 
 import com.devsteve.hotel_manage_system.application.ports.output.RoomRepositoryPort;
 import com.devsteve.hotel_manage_system.domain.models.room.RoomModel;
-import com.devsteve.hotel_manage_system.infra.adapters.output.jpa.repository.RoomJpaRepository;
-import com.devsteve.hotel_manage_system.infra.adapters.output.jpa.repository.RoomPriceJpaRepository;
-import com.devsteve.hotel_manage_system.infra.adapters.output.jpa.repository.RoomStatusJpaRepository;
-import com.devsteve.hotel_manage_system.infra.adapters.output.jpa.repository.RoomTypeJpaRepository;
+import com.devsteve.hotel_manage_system.infra.adapters.output.jpa.repository.*;
 import com.devsteve.hotel_manage_system.infra.adapters.output.jpa.specification.RoomSpecification;
 import com.devsteve.hotel_manage_system.infra.entities.Room;
 import com.devsteve.hotel_manage_system.infra.entities.RoomPrice;
@@ -19,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;

@@ -1,6 +1,8 @@
 package com.devsteve.hotel_manage_system.application.usecases;
 
 import com.devsteve.hotel_manage_system.application.ports.input.room.rooms.*;
+import com.devsteve.hotel_manage_system.application.ports.output.ImageStoragePort;
+import com.devsteve.hotel_manage_system.application.ports.output.RoomImageRepositoryPort;
 import com.devsteve.hotel_manage_system.application.ports.output.RoomRepositoryPort;
 import com.devsteve.hotel_manage_system.domain.models.room.RoomModel;
 
@@ -18,8 +20,12 @@ public class RoomService implements
         ListRoomsUseCase,
         GetRoomsByFilterUseCase {
     private RoomRepositoryPort roomRepositoryPort;
+    private final RoomImageRepositoryPort roomImageRepositoryPort;
+    private final ImageStoragePort imageStoragePort;
 
-    public RoomService(RoomRepositoryPort roomRepositoryPort) {
+    public RoomService(RoomImageRepositoryPort roomImageRepositoryPort, ImageStoragePort imageStoragePort, RoomRepositoryPort roomRepositoryPort) {
+        this.roomImageRepositoryPort = roomImageRepositoryPort;
+        this.imageStoragePort = imageStoragePort;
         this.roomRepositoryPort = roomRepositoryPort;
     }
 
@@ -43,6 +49,7 @@ public class RoomService implements
     public void delete(UUID id) {
         this.findById(id);
         roomRepositoryPort.delete(id);
+        roomImageRepositoryPort.deleteAllByRoomId(id);
     }
 
     @Override

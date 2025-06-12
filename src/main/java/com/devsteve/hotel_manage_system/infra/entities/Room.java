@@ -7,6 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -51,6 +52,9 @@ public class Room {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at")
     private Instant updatedAt;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<RoomImage> imagenes;
 
     @PrePersist
     public void prePersist() {

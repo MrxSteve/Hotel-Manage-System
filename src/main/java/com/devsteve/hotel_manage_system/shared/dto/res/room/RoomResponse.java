@@ -22,4 +22,5 @@ public class RoomResponse {
     private RoomTypeResponse roomType;
     private RoomStatusResponse status;
     private List<RoomPriceResponse> precios;
+    private List<RoomImageResponse> imagenes;
 }

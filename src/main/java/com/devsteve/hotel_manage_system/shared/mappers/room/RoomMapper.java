@@ -11,7 +11,7 @@ import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {RoomTypeMapper.class, RoomStatusMapper.class, RoomPriceMapper.class})
+@Mapper(componentModel = "spring", uses = {RoomTypeMapper.class, RoomStatusMapper.class, RoomPriceMapper.class, RoomImageMapper.class})
 public interface RoomMapper {
     // DTO <-> Model
     @Mapping(target = "roomType.id", source = "roomTypeId")
