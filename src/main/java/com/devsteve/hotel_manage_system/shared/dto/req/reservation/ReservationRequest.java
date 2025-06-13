@@ -27,5 +27,4 @@ public class ReservationRequest {
     private LocalTime horaCheckout;
 
     private Integer statusId;
-    private BigDecimal totalPago;
 }

@@ -1,9 +1,7 @@
 package com.devsteve.hotel_manage_system.infra.config.beans;
 
 import com.devsteve.hotel_manage_system.application.ports.input.reservation.reservations.*;
-import com.devsteve.hotel_manage_system.application.ports.output.ReservationHistoryRepositoryPort;
-import com.devsteve.hotel_manage_system.application.ports.output.ReservationRepositoryPort;
-import com.devsteve.hotel_manage_system.application.ports.output.ReservationStatusRepositoryPort;
+import com.devsteve.hotel_manage_system.application.ports.output.*;
 import com.devsteve.hotel_manage_system.application.usecases.ReservationService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,11 +12,15 @@ public class ReservationServiceConfig {
     public ReservationService reservationService(
             ReservationRepositoryPort reservationRepositoryPort,
             ReservationStatusRepositoryPort reservationStatusRepositoryPort,
-            ReservationHistoryRepositoryPort reservationHistoryRepositoryPort) {
+            ReservationHistoryRepositoryPort reservationHistoryRepositoryPort,
+            RoomRepositoryPort roomRepositoryPort,
+            RoomPriceRepositoryPort roomPriceRepositoryPort) {
         return new ReservationService(
                 reservationRepositoryPort,
                 reservationStatusRepositoryPort,
-                reservationHistoryRepositoryPort);
+                reservationHistoryRepositoryPort,
+                roomRepositoryPort,
+                roomPriceRepositoryPort);
     }
 
     @Bean

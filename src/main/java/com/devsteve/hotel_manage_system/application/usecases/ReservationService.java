@@ -1,17 +1,18 @@
 package com.devsteve.hotel_manage_system.application.usecases;
 
 import com.devsteve.hotel_manage_system.application.ports.input.reservation.reservations.*;
-import com.devsteve.hotel_manage_system.application.ports.output.ReservationHistoryRepositoryPort;
-import com.devsteve.hotel_manage_system.application.ports.output.ReservationRepositoryPort;
-import com.devsteve.hotel_manage_system.application.ports.output.ReservationStatusRepositoryPort;
+import com.devsteve.hotel_manage_system.application.ports.output.*;
 import com.devsteve.hotel_manage_system.domain.models.reservation.ReservationHistoryModel;
 import com.devsteve.hotel_manage_system.domain.models.reservation.ReservationStatusModel;
 import com.devsteve.hotel_manage_system.domain.models.room.ReservationModel;
+import com.devsteve.hotel_manage_system.domain.models.room.RoomModel;
+import com.devsteve.hotel_manage_system.domain.models.room.RoomPriceModel;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,23 +27,51 @@ public class ReservationService implements
     private final ReservationRepositoryPort reservationRepositoryPort;
     private final ReservationStatusRepositoryPort reservationStatusRepositoryPort;
     private final ReservationHistoryRepositoryPort reservationHistoryRepositoryPort;
+    private final RoomRepositoryPort roomRepositoryPort;
+    private final RoomPriceRepositoryPort roomPriceRepositoryPort;
 
-    public ReservationService(ReservationRepositoryPort reservationRepositoryPort,
-                              ReservationStatusRepositoryPort reservationStatusRepositoryPort,
-                              ReservationHistoryRepositoryPort reservationHistoryRepositoryPort) {
+    public ReservationService(
+            ReservationRepositoryPort reservationRepositoryPort,
+            ReservationStatusRepositoryPort reservationStatusRepositoryPort,
+            ReservationHistoryRepositoryPort reservationHistoryRepositoryPort,
+            RoomRepositoryPort roomRepositoryPort,
+            RoomPriceRepositoryPort roomPriceRepositoryPort) {
         this.reservationRepositoryPort = reservationRepositoryPort;
         this.reservationStatusRepositoryPort = reservationStatusRepositoryPort;
         this.reservationHistoryRepositoryPort = reservationHistoryRepositoryPort;
+        this.roomRepositoryPort = roomRepositoryPort;
+        this.roomPriceRepositoryPort = roomPriceRepositoryPort;
     }
 
     @Override
     public ReservationModel save(ReservationModel reservation) {
+        if (reservation.getUserId() == null) {
+            throw new IllegalArgumentException("El campo userId no puede ser nulo");
+        }
+
         if (reservation.getStatusId() == null) {
             throw new IllegalArgumentException("El campo statusId no puede ser nulo");
         }
 
         ReservationStatusModel status = reservationStatusRepositoryPort.findById(reservation.getStatusId())
                 .orElseThrow(() -> new RuntimeException("Estado no válido"));
+
+        if (reservation.getTotalPago() == null) {
+            RoomModel room = roomRepositoryPort.findById(reservation.getRoomId())
+                    .orElseThrow(() -> new RuntimeException("Habitación no encontrada"));
+
+            RoomPriceModel precio = roomPriceRepositoryPort.findActivePriceByRoomId(room.getId())
+                    .orElseThrow(() -> new RuntimeException("No hay precio activo para esta habitación"));
+
+            long noches = ChronoUnit.DAYS.between(reservation.getFechaInicio(), reservation.getFechaFin());
+
+            if (noches <= 0) {
+                throw new IllegalArgumentException("La fecha de fin debe ser posterior a la fecha de inicio");
+            }
+
+            BigDecimal total = precio.getPrecioPorNoche().multiply(BigDecimal.valueOf(noches));
+            reservation.setTotalPago(total);
+        }
 
         reservation.setStatus(status);
         return reservationRepositoryPort.save(reservation);
