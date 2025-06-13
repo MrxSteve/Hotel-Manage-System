@@ -42,7 +42,7 @@ public class RoomController {
         return ResponseEntity.ok(roomMapper.modelToResponse(model));
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<RoomResponse>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
