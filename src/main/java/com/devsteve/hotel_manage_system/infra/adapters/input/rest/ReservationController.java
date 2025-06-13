@@ -123,6 +123,7 @@ public class ReservationController {
     @GetMapping("/{id}/history")
     public ResponseEntity<List<ReservationHistoryResponse>> getHistory(@PathVariable UUID id) {
         List<ReservationHistoryModel> history = getReservationHistoryByReservationIdUseCase.getHistoryByReservationId(id);
-        return ResponseEntity.ok(reservationHistoryMapper.modelListToResponseList(history));
+        List<ReservationHistoryResponse> response = reservationHistoryMapper.modelListToResponseList(history);
+        return ResponseEntity.ok(response);
     }
 }
