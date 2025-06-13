@@ -36,7 +36,7 @@ public class RoomController {
         return ResponseEntity.ok(roomMapper.modelToResponse(saved));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<RoomResponse> getById(@PathVariable UUID id) {
         RoomModel model = getRoomByIdUseCase.findById(id);
         return ResponseEntity.ok(roomMapper.modelToResponse(model));
