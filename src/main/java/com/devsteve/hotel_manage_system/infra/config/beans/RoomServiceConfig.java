@@ -1,5 +1,6 @@
 package com.devsteve.hotel_manage_system.infra.config.beans;
 
+import com.devsteve.hotel_manage_system.application.ports.input.room.images.DeleteAllImagesByRoomIdUseCase;
 import com.devsteve.hotel_manage_system.application.ports.input.room.rooms.*;
 import com.devsteve.hotel_manage_system.application.ports.output.ImageStoragePort;
 import com.devsteve.hotel_manage_system.application.ports.output.RoomImageRepositoryPort;
@@ -12,9 +13,8 @@ import org.springframework.context.annotation.Configuration;
 public class RoomServiceConfig {
     @Bean
     public RoomService roomService(RoomRepositoryPort roomRepositoryPort,
-                                 RoomImageRepositoryPort roomImageRepositoryPort,
-                                 ImageStoragePort imageStoragePort) {
-        return new RoomService(roomImageRepositoryPort, imageStoragePort, roomRepositoryPort);
+                                   DeleteAllImagesByRoomIdUseCase deleteAllImagesByRoomIdUseCase) {
+        return new RoomService(roomRepositoryPort, deleteAllImagesByRoomIdUseCase);
     }
 
     @Bean

@@ -87,6 +87,10 @@ public class RoomImageService implements
     public void deleteAllImagesByRoomId(UUID roomId) {
         List<RoomImageModel> images = roomImageRepositoryPort.findByRoomId(roomId);
 
+        if (images.isEmpty()) {
+            return;
+        }
+
         images.forEach(image -> {
             String key = extractKeyFromUrl(image.getUrlImagen());
             s3ImageStorageAdapter.deleteImage(key);

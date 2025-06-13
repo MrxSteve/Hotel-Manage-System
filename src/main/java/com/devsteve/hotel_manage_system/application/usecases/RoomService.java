@@ -1,8 +1,7 @@
 package com.devsteve.hotel_manage_system.application.usecases;
 
+import com.devsteve.hotel_manage_system.application.ports.input.room.images.DeleteAllImagesByRoomIdUseCase;
 import com.devsteve.hotel_manage_system.application.ports.input.room.rooms.*;
-import com.devsteve.hotel_manage_system.application.ports.output.ImageStoragePort;
-import com.devsteve.hotel_manage_system.application.ports.output.RoomImageRepositoryPort;
 import com.devsteve.hotel_manage_system.application.ports.output.RoomRepositoryPort;
 import com.devsteve.hotel_manage_system.domain.models.room.RoomModel;
 
@@ -19,14 +18,12 @@ public class RoomService implements
         DeleteRoomUseCase,
         ListRoomsUseCase,
         GetRoomsByFilterUseCase {
-    private RoomRepositoryPort roomRepositoryPort;
-    private final RoomImageRepositoryPort roomImageRepositoryPort;
-    private final ImageStoragePort imageStoragePort;
+    private final RoomRepositoryPort roomRepositoryPort;
+    private final DeleteAllImagesByRoomIdUseCase deleteAllImagesByRoomIdUseCase;
 
-    public RoomService(RoomImageRepositoryPort roomImageRepositoryPort, ImageStoragePort imageStoragePort, RoomRepositoryPort roomRepositoryPort) {
-        this.roomImageRepositoryPort = roomImageRepositoryPort;
-        this.imageStoragePort = imageStoragePort;
+    public RoomService(RoomRepositoryPort roomRepositoryPort, DeleteAllImagesByRoomIdUseCase deleteAllImagesByRoomIdUseCase) {
         this.roomRepositoryPort = roomRepositoryPort;
+        this.deleteAllImagesByRoomIdUseCase = deleteAllImagesByRoomIdUseCase;
     }
 
     @Override
@@ -48,8 +45,8 @@ public class RoomService implements
     @Override
     public void delete(UUID id) {
         this.findById(id);
+        deleteAllImagesByRoomIdUseCase.deleteAllImagesByRoomId(id);
         roomRepositoryPort.delete(id);
-        roomImageRepositoryPort.deleteAllByRoomId(id);
     }
 
     @Override
