@@ -42,20 +42,16 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/swagger-resources/**",
-                                "/swagger-ui.html",
-                                "/webjars/**"
-                        ).permitAll()
+                        .requestMatchers("/swagger-ui/*", "/v3/api-docs/", "/swagger-resources/", "/webjars/*").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/rooms/all").permitAll()
-                        .requestMatchers("/api/rooms/search").permitAll()
-                        .requestMatchers("/api/rooms/id/**").permitAll()
+                        .requestMatchers("/api/rooms/all", "/api/rooms/search", "/api/rooms/id/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        .requestMatchers(HttpMethod.POST, "/api/reservations").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/reservations/client").hasRole("CLIENTE")
+                        
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
