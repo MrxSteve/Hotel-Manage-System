@@ -17,6 +17,8 @@ import com.devsteve.hotel_manage_system.shared.mappers.reservation.ReservationMa
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,7 +35,6 @@ public class ClientReservationService {
     public ReservationModel createByClient(ReservationClientRequest request) {
         UserModel currentUser = currentUserService.getCurrentUser();
 
-        // Buscar el precio activo
         RoomModel room = roomRepositoryPort.findById(request.getRoomId())
                 .orElseThrow(() -> new RuntimeException("Habitación no encontrada"));
 
@@ -43,6 +44,14 @@ public class ClientReservationService {
         ReservationStatusModel pendiente = reservationStatusRepositoryPort.findByName("PENDIENTE")
                 .orElseThrow(() -> new RuntimeException("Estado PENDIENTE no encontrado"));
 
+        long noches = ChronoUnit.DAYS.between(request.getFechaInicio(), request.getFechaFin());
+
+        if (noches <= 0) {
+            throw new IllegalArgumentException("La fecha de fin debe ser posterior a la fecha de inicio");
+        }
+
+        BigDecimal total = precio.getPrecioPorNoche().multiply(BigDecimal.valueOf(noches));
+
         ReservationModel model = new ReservationModel();
         model.setUserId(currentUser.getId());
         model.setRoomId(request.getRoomId());
@@ -50,7 +59,7 @@ public class ClientReservationService {
         model.setFechaFin(request.getFechaFin());
         model.setHoraCheckin(request.getHoraCheckin());
         model.setHoraCheckout(request.getHoraCheckout());
-        model.setTotalPago(precio.getPrecioPorNoche());
+        model.setTotalPago(total);
         model.setStatus(pendiente);
 
         return reservationRepositoryPort.save(model);
