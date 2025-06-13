@@ -88,6 +88,14 @@ public class ReservationJpaAdapter implements ReservationRepositoryPort {
                 .toList();
     }
 
+    @Override
+    public List<ReservationModel> findByUserId(UUID userId) {
+        return reservationJpaRepository.findByUser_Id(userId)
+                .stream()
+                .map(this::enrichModel)
+                .collect(Collectors.toList());
+    }
+
     private ReservationModel enrichModel(Reservation entity) {
         ReservationModel model = reservationMapper.entityToModel(entity);
 

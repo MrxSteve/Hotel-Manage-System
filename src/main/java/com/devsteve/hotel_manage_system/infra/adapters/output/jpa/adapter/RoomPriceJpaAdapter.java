@@ -2,8 +2,10 @@ package com.devsteve.hotel_manage_system.infra.adapters.output.jpa.adapter;
 
 import com.devsteve.hotel_manage_system.application.ports.output.RoomPriceRepositoryPort;
 import com.devsteve.hotel_manage_system.domain.models.room.RoomPriceModel;
+import com.devsteve.hotel_manage_system.infra.adapters.output.jpa.repository.RoomJpaRepository;
 import com.devsteve.hotel_manage_system.infra.adapters.output.jpa.repository.RoomPriceJpaRepository;
 import com.devsteve.hotel_manage_system.infra.adapters.output.jpa.repository.RoomTypeJpaRepository;
+import com.devsteve.hotel_manage_system.infra.entities.Room;
 import com.devsteve.hotel_manage_system.infra.entities.RoomPrice;
 import com.devsteve.hotel_manage_system.shared.mappers.room.RoomPriceMapper;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -19,6 +22,7 @@ public class RoomPriceJpaAdapter implements RoomPriceRepositoryPort {
     private final RoomPriceJpaRepository roomPriceJpaRepository;
     private final RoomPriceMapper roomPriceMapper;
     private final RoomTypeJpaRepository roomTypeJpaRepository;
+    private final RoomJpaRepository roomJpaRepository;
 
     @Override
     public RoomPriceModel save(RoomPriceModel model) {
@@ -59,5 +63,14 @@ public class RoomPriceJpaAdapter implements RoomPriceRepositoryPort {
                 .stream()
                 .map(roomPriceMapper::entityToModel)
                 .toList();
+    }
+
+    @Override
+    public Optional<RoomPriceModel> findActivePriceByRoomId(UUID roomId) {
+        return roomJpaRepository.findById(roomId)
+                .map(Room::getRoomType)
+                .map(roomType -> roomType.getId())
+                .flatMap(roomPriceJpaRepository::findActiveByRoomTypeId)
+                .map(roomPriceMapper::entityToModel);
     }
 }

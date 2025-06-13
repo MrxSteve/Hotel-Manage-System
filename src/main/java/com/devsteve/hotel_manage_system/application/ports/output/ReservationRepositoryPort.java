@@ -27,4 +27,6 @@ public interface ReservationRepositoryPort {
             Optional<Instant> createdAtHasta,
             int page, int size
     );
+
+    List<ReservationModel> findByUserId(UUID userId);
 }

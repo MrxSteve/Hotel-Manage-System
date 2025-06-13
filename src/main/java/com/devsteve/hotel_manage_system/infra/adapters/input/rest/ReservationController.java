@@ -4,6 +4,8 @@ import com.devsteve.hotel_manage_system.application.ports.input.reservation.hist
 import com.devsteve.hotel_manage_system.application.ports.input.reservation.reservations.*;
 import com.devsteve.hotel_manage_system.domain.models.reservation.ReservationHistoryModel;
 import com.devsteve.hotel_manage_system.domain.models.room.ReservationModel;
+import com.devsteve.hotel_manage_system.infra.security.dto.req.ReservationClientRequest;
+import com.devsteve.hotel_manage_system.infra.security.services.ClientReservationService;
 import com.devsteve.hotel_manage_system.shared.dto.req.reservation.ReservationRequest;
 import com.devsteve.hotel_manage_system.shared.dto.res.reservation.ReservationHistoryResponse;
 import com.devsteve.hotel_manage_system.shared.dto.res.reservation.ReservationResponse;
@@ -13,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -35,12 +38,28 @@ public class ReservationController {
     private final GetReservationHistoryByReservationIdUseCase getReservationHistoryByReservationIdUseCase;
     private final ReservationMapper reservationMapper;
     private final ReservationHistoryMapper reservationHistoryMapper;
+    private final ClientReservationService clientReservationService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ReservationResponse> create(@RequestBody @Valid ReservationRequest request) {
         ReservationModel model = reservationMapper.requestToModel(request);
         ReservationModel saved = createReservationUseCase.save(model);
         return ResponseEntity.status(HttpStatus.CREATED).body(reservationMapper.modelToResponse(saved));
+    }
+
+    @PostMapping("/client")
+    @PreAuthorize("hasRole('CLIENTE')")
+    public ResponseEntity<ReservationResponse> createByClient(@RequestBody @Valid ReservationClientRequest request) {
+        ReservationModel saved = clientReservationService.createByClient(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(reservationMapper.modelToResponse(saved));
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('CLIENTE')")
+    public ResponseEntity<List<ReservationResponse>> getMyReservations() {
+        List<ReservationModel> models = clientReservationService.getMyReservations();
+        return ResponseEntity.ok(reservationMapper.modelListToResponseList(models));
     }
 
     @GetMapping
