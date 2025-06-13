@@ -96,6 +96,14 @@ public class ReservationJpaAdapter implements ReservationRepositoryPort {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<ReservationModel> findOverlappingReservations(UUID roomId, LocalDate fechaInicio, LocalDate fechaFin) {
+        return reservationJpaRepository.findOverlappingReservations(roomId, fechaInicio, fechaFin)
+                .stream()
+                .map(this::enrichModel)
+                .collect(Collectors.toList());
+    }
+
     private ReservationModel enrichModel(Reservation entity) {
         ReservationModel model = reservationMapper.entityToModel(entity);
 

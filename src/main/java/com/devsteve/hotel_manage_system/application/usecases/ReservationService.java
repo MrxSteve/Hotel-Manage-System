@@ -7,6 +7,7 @@ import com.devsteve.hotel_manage_system.domain.models.reservation.ReservationSta
 import com.devsteve.hotel_manage_system.domain.models.room.ReservationModel;
 import com.devsteve.hotel_manage_system.domain.models.room.RoomModel;
 import com.devsteve.hotel_manage_system.domain.models.room.RoomPriceModel;
+import com.devsteve.hotel_manage_system.domain.models.room.RoomStatusModel;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
@@ -29,18 +30,21 @@ public class ReservationService implements
     private final ReservationHistoryRepositoryPort reservationHistoryRepositoryPort;
     private final RoomRepositoryPort roomRepositoryPort;
     private final RoomPriceRepositoryPort roomPriceRepositoryPort;
+    private final RoomStatusRepositoryPort roomStatusRepositoryPort;
 
     public ReservationService(
             ReservationRepositoryPort reservationRepositoryPort,
             ReservationStatusRepositoryPort reservationStatusRepositoryPort,
             ReservationHistoryRepositoryPort reservationHistoryRepositoryPort,
             RoomRepositoryPort roomRepositoryPort,
-            RoomPriceRepositoryPort roomPriceRepositoryPort) {
+            RoomPriceRepositoryPort roomPriceRepositoryPort,
+            RoomStatusRepositoryPort roomStatusRepositoryPort) {
         this.reservationRepositoryPort = reservationRepositoryPort;
         this.reservationStatusRepositoryPort = reservationStatusRepositoryPort;
         this.reservationHistoryRepositoryPort = reservationHistoryRepositoryPort;
         this.roomRepositoryPort = roomRepositoryPort;
         this.roomPriceRepositoryPort = roomPriceRepositoryPort;
+        this.roomStatusRepositoryPort = roomStatusRepositoryPort;
     }
 
     @Override
@@ -56,6 +60,19 @@ public class ReservationService implements
         ReservationStatusModel status = reservationStatusRepositoryPort.findById(reservation.getStatusId())
                 .orElseThrow(() -> new RuntimeException("Estado no válido"));
 
+        long noches = ChronoUnit.DAYS.between(reservation.getFechaInicio(), reservation.getFechaFin());
+        if (noches <= 0) {
+            throw new IllegalArgumentException("La fecha de fin debe ser posterior a la fecha de inicio");
+        }
+
+        List<ReservationModel> conflictos = reservationRepositoryPort.findOverlappingReservations(
+                reservation.getRoomId(), reservation.getFechaInicio(), reservation.getFechaFin()
+        );
+
+        if (!conflictos.isEmpty()) {
+            throw new RuntimeException("La habitación ya está reservada en las fechas seleccionadas");
+        }
+
         if (reservation.getTotalPago() == null) {
             RoomModel room = roomRepositoryPort.findById(reservation.getRoomId())
                     .orElseThrow(() -> new RuntimeException("Habitación no encontrada"));
@@ -63,15 +80,14 @@ public class ReservationService implements
             RoomPriceModel precio = roomPriceRepositoryPort.findActivePriceByRoomId(room.getId())
                     .orElseThrow(() -> new RuntimeException("No hay precio activo para esta habitación"));
 
-            long noches = ChronoUnit.DAYS.between(reservation.getFechaInicio(), reservation.getFechaFin());
-
-            if (noches <= 0) {
-                throw new IllegalArgumentException("La fecha de fin debe ser posterior a la fecha de inicio");
-            }
-
             BigDecimal total = precio.getPrecioPorNoche().multiply(BigDecimal.valueOf(noches));
             reservation.setTotalPago(total);
         }
+
+        Integer statusOcupadaId = roomStatusRepositoryPort.findByName("OCUPADA")
+                .orElseThrow(() -> new RuntimeException("Estado OCUPADA no encontrado")).getId();
+
+        roomRepositoryPort.changeRoomStatus(reservation.getRoomId(), statusOcupadaId);
 
         reservation.setStatus(status);
         return reservationRepositoryPort.save(reservation);
@@ -111,30 +127,36 @@ public class ReservationService implements
     public ReservationModel changeStatus(UUID reservationId, Integer nuevoStatusId, @Nullable String comentario) {
         ReservationModel reserva = this.findById(reservationId);
 
-        // Obtener el estado anterior desde el objeto `status`
         ReservationStatusModel estadoAnterior = reserva.getStatus();
         if (estadoAnterior == null || estadoAnterior.getId() == null) {
             throw new RuntimeException("Estado anterior no disponible");
         }
 
-        // Obtener el nuevo estado completo
         ReservationStatusModel estadoNuevo = reservationStatusRepositoryPort.findById(nuevoStatusId)
                 .orElseThrow(() -> new RuntimeException("Estado nuevo no encontrado"));
 
-        // Actualizar estado de la reserva
         reserva.setStatus(estadoNuevo);
-
         ReservationModel actualizada = reservationRepositoryPort.save(reserva);
 
-        // Registrar historial
         ReservationHistoryModel history = new ReservationHistoryModel();
         history.setReservationId(reservationId);
         history.setEstadoAnterior(estadoAnterior);
         history.setEstadoNuevo(estadoNuevo);
         history.setFechaCambio(Instant.now());
         history.setComentario(comentario);
-
         reservationHistoryRepositoryPort.save(history);
+
+        RoomStatusModel ocupada = roomStatusRepositoryPort.findByName("OCUPADA")
+                .orElseThrow(() -> new RuntimeException("Estado OCUPADA no encontrado"));
+        RoomStatusModel disponible = roomStatusRepositoryPort.findByName("DISPONIBLE")
+                .orElseThrow(() -> new RuntimeException("Estado DISPONIBLE no encontrado"));
+
+        if (estadoNuevo.getName().equalsIgnoreCase("CANCELADA")
+                || estadoNuevo.getName().equalsIgnoreCase("CHECKOUT")) {
+            roomRepositoryPort.changeRoomStatus(reserva.getRoomId(), disponible.getId());
+        } else if (estadoNuevo.getName().equalsIgnoreCase("CHECKIN")) {
+            roomRepositoryPort.changeRoomStatus(reserva.getRoomId(), ocupada.getId());
+        }
 
         return actualizada;
     }

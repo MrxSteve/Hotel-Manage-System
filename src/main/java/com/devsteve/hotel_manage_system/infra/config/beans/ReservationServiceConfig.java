@@ -14,13 +14,15 @@ public class ReservationServiceConfig {
             ReservationStatusRepositoryPort reservationStatusRepositoryPort,
             ReservationHistoryRepositoryPort reservationHistoryRepositoryPort,
             RoomRepositoryPort roomRepositoryPort,
-            RoomPriceRepositoryPort roomPriceRepositoryPort) {
+            RoomPriceRepositoryPort roomPriceRepositoryPort,
+            RoomStatusRepositoryPort roomStatusRepositoryPort) {
         return new ReservationService(
                 reservationRepositoryPort,
                 reservationStatusRepositoryPort,
                 reservationHistoryRepositoryPort,
                 roomRepositoryPort,
-                roomPriceRepositoryPort);
+                roomPriceRepositoryPort,
+                roomStatusRepositoryPort);
     }
 
     @Bean

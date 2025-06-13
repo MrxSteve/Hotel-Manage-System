@@ -24,4 +24,5 @@ public interface RoomRepositoryPort {
             int page,
             int size);
 
+    void changeRoomStatus(UUID roomId, Integer newStatusId);
 }

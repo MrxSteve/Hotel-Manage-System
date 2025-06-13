@@ -114,6 +114,12 @@ public class ReservationController {
         return ResponseEntity.ok(reservationMapper.modelToResponse(model));
     }
 
+    @DeleteMapping("/my/{reservationId}")
+    public ResponseEntity<Void> cancelMyReservation(@PathVariable UUID reservationId) {
+        clientReservationService.cancelMyReservation(reservationId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{id}/history")
     public ResponseEntity<List<ReservationHistoryResponse>> getHistory(@PathVariable UUID id) {
         List<ReservationHistoryModel> history = getReservationHistoryByReservationIdUseCase.getHistoryByReservationId(id);

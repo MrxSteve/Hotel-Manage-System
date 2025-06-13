@@ -112,6 +112,18 @@ public class RoomJpaAdapter implements RoomRepositoryPort {
                 .toList();
     }
 
+    @Override
+    public void changeRoomStatus(UUID roomId, Integer newStatusId) {
+        Room room = roomJpaRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Room not found with ID: " + roomId));
+
+        RoomStatus newStatus = roomStatusJpaRepository.findById(newStatusId)
+                .orElseThrow(() -> new RuntimeException("RoomStatus not found with ID: " + newStatusId));
+
+        room.setStatus(newStatus);
+        roomJpaRepository.save(room);
+    }
+
     private RoomModel enrichModel(Room entity) {
         RoomModel model = roomMapper.entityToModel(entity);
 
