@@ -18,7 +18,8 @@ import java.time.Instant;
 @Table(name = "reservation_history")
 public class ReservationHistory {
     @Id
-    @ColumnDefault("nextval('reservation_history_id_seq')")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reservation_history_id_gen")
+    @SequenceGenerator(name = "reservation_history_id_gen", sequenceName = "reservation_history_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Integer id;
 
