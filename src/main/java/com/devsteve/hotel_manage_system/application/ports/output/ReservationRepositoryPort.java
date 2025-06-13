@@ -31,4 +31,6 @@ public interface ReservationRepositoryPort {
     List<ReservationModel> findByUserId(UUID userId);
 
     List<ReservationModel> findOverlappingReservations(UUID roomId, LocalDate fechaInicio, LocalDate fechaFin);
+
+    List<ReservationModel> findAllWithFechaFinBefore(LocalDate fecha);
 }

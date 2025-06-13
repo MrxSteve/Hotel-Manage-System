@@ -33,4 +33,5 @@ public interface ReservationJpaRepository extends JpaRepository<Reservation, UUI
             @Param("fechaFin") LocalDate fechaFin
     );
 
+    List<Reservation> findByFechaFinBefore(LocalDate fechaFin);
 }

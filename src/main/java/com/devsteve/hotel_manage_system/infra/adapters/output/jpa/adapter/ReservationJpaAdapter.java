@@ -104,6 +104,14 @@ public class ReservationJpaAdapter implements ReservationRepositoryPort {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<ReservationModel> findAllWithFechaFinBefore(LocalDate fecha) {
+        return reservationJpaRepository.findByFechaFinBefore(fecha)
+                .stream()
+                .map(this::enrichModel)
+                .collect(Collectors.toList());
+    }
+
     private ReservationModel enrichModel(Reservation entity) {
         ReservationModel model = reservationMapper.entityToModel(entity);
 
